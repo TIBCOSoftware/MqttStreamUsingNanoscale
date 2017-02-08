@@ -1,0 +1,24 @@
+{
+  "name": "nanoscale-streaming",
+  "description": "Mqtt Streaming",
+  "main": "",
+  "authors": [
+    "Shahzad Hassan"
+  ],
+  "license": "MIT",
+  "homepage": "index.html",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "platform.js": "platform#^1.3.3"
+  },
+  "devDependencies": {
+    "platform.js": "platform#^1.3.3"
+  }
+}

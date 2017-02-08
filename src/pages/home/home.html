@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Publish</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+ <!-- <button ion-button (click)="connectToMqtt()">Connect</button>
+ <button ion-button (click)="subscribeIOS()">iOS Subscribe</button>
+ <button ion-button (click)="unsubscribeIOS()">iOS unSubscribe</button>
+ <button ion-button (click)="publishIOS()">iOS publish</button>
+  -->
+  
+<!--<ion-content class="outer-content">-->
+  <ion-list>
+	<ion-item>
+	    <ion-label floating>Nanoscale host</ion-label>
+	    <ion-input type="text" type="url" [(ngModel)]="url" ></ion-input>
+	</ion-item>
+	<ion-item>
+	    <ion-label floating>Serial#</ion-label>
+	    <ion-input type="text" [(ngModel)]="serial" ></ion-input>
+  	</ion-item>
+
+	<ion-item>
+	    <ion-label floating>Model#</ion-label>
+	    <ion-input type="text" [(ngModel)]="model" ></ion-input>
+	 </ion-item>  
+	 <ion-item>
+	    <ion-label floating>Time Interval</ion-label>
+	    <ion-input type="number" [(ngModel)]="timeinterval" (keypress)="restrictNumeric($event)" ></ion-input>
+	 </ion-item>  
+	 <ion-item>
+	   <button ion-button [attr.disabled]="disableStream? '' : null" (click)="streamTemperature()">Stream</button>
+ 	    <button ion-button (click)="stopStreaming()">Stop</button>
+ 	    <button ion-button color="danger" (click)="RedLineCrossed()">Red Line</button>
+    
+ 	</ion-item>
+  <gauge></gauge>
+    
+  </ion-list>
+</ion-content>
+
+<style>
+  ion-list + ion-list {
+    margin-top: 0;
+  }
+  .small-text {
+    font-size: 10px;
+  }
+</style>

@@ -1,0 +1,21 @@
+<ion-menu [content]="content">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Pages</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-list>
+     <!--  <button (click)="connectToMqtt()">Connect
+      </button> -->
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+<ion-tabs #content >
+  <ion-tab [root]="tab1Root" tabTitle="Publish" tabIcon="home"></ion-tab>
+  <ion-tab [root]="tab2Root" tabTitle="Subscribe" tabIcon="information-circle"></ion-tab>
+  <!-- <ion-tab [root]="tab3Root" tabTitle="Contact" tabIcon="contacts"></ion-tab> -->
+</ion-tabs>

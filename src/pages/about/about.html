@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Subscribe
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+<button ion-button (click)="connectToMqtt()">Subscribe</button>
+<button ion-button (click)="unSubscribeMqtt()">UnSubscribe</button>
+<ion-list>
+	<ion-item>
+	    <ion-label floating>Nanoscale host</ion-label>
+	    <ion-input type="text" type="url" placeholder="don't include http|https" [(ngModel)]="url" ></ion-input>
+	</ion-item>
+	<ion-item>
+	    <ion-label floating>Username</ion-label>
+	    <ion-input type="text" [(ngModel)]="username" ></ion-input>
+		</ion-item>
+
+	<ion-item>
+	    <ion-label floating>Password</ion-label>
+	    <ion-input type="password" [(ngModel)]="password" ></ion-input>
+	 </ion-item>  
+</ion-list>
+<gauge></gauge>
+</ion-content>
