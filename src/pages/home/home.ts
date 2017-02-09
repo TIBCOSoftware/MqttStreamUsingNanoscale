@@ -12,6 +12,8 @@ export class HomePage {
   @Input() model:string="";
   @Input() warmth:any={lower:100,upper:160};
   @Input() timeinterval:number=1;
+  @Input() username:string="shassan@anypresence.com,MQTTStreaming,push,MQTT";
+  @Input() password:string="password";
   disableStream:boolean=false;
 
   constructor(public navCtrl: NavController,private mqttService:MqttService) {
@@ -80,13 +82,14 @@ export class HomePage {
   streamTemperature(){
     
     let host= new URL(this.url);
-    this.mqttService.streamNumbers(host,this.warmth.lower,this.warmth.upper,this.serial,this.model,this.timeinterval*1000);
+    this.mqttService.streamNumbers(host,this.warmth.lower,this.warmth.upper,this.serial,this.model,this.timeinterval*1000,this.username,this.password);
     this.disableStream=true;//disable the button
   }
 
   stopStreaming(){
     this.disableStream=false;//enable the button
-    this.mqttService.stopStream(new URL(this.url));
+    this.mqttService.stopPahoStream();
+    //this.mqttService.stopStream();
   }
 
   RedLineCrossed(){

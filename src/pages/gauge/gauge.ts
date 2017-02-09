@@ -1,7 +1,7 @@
-import { Component,ViewChild ,OnDestroy} from '@angular/core';
+import { ViewChild,Component,OnDestroy,ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { Subscription }   from 'rxjs/Subscription';
-import {MqttService} from '../../mqtt-service';
+import { MqttService } from '../../mqtt-service';
 import { jqxGaugeComponent } from 'jqwidgets-framework/jqwidgets-ts/angular_jqxgauge';
 
 @Component({
@@ -9,15 +9,15 @@ import { jqxGaugeComponent } from 'jqwidgets-framework/jqwidgets-ts/angular_jqxg
   //templateUrl: 'gauge.html'
   selector: 'gauge',
     template: `
-        <jqxGauge #gaugeReference (onValueChanging)="gaugeOnValueChanging($event)"
-            [ranges]='ranges' [ticksMinor]='ticksMinor' [ticksMajor]='ticksMajor'
-            [value]='0' [colorScheme]='"scheme05"' [animationDuration]='1200'>
-        </jqxGauge>
-        <div id="gaugeValue"
-            style="position: absolute; top: -140px; left: 124px; font-family: Sans-Serif; text-align: center; font-size: 17px; width: 100px;">
-        </div>`,
-   styles:[`
-     #gaugeValue {
+      <jqxGauge #gaugeReference (onValueChanging)="gaugeOnValueChanging($event)"
+          [ranges]='ranges' [ticksMinor]='ticksMinor' [ticksMajor]='ticksMajor'
+          [value]='0' [colorScheme]='"scheme05"' [animationDuration]='1200'>
+      </jqxGauge>
+      <div #gaugeValue
+          style="position: absolute; top: -140px; left: 124px; font-family: Sans-Serif; text-align: center; font-size: 17px; width: 100px;">0 &#8457;
+      </div>`,
+    styles:[`
+      #gaugeValue {
           background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #fafafa), color-stop(100%, #f3f3f3));
           background-image: -webkit-linear-gradient(#fafafa, #f3f3f3);
           background-image: -moz-linear-gradient(#fafafa, #f3f3f3);
@@ -40,8 +40,17 @@ import { jqxGaugeComponent } from 'jqwidgets-framework/jqwidgets-ts/angular_jqxg
 export class GaugePage implements OnDestroy{
 
   @ViewChild('gaugeReference') myGauge: jqxGaugeComponent;
+  @ViewChild('gaugeValue')inputNumber:ElementRef;
   subscription:Subscription;
-
+  ticksMinor: any = { interval: 5, size: '5%' };
+  ticksMajor: any = { interval: 10, size: '9%' };
+  ranges: any[] =
+  [
+      { startValue: 0, endValue: 55, style: { fill: '#4bb648', stroke: '#4bb648' }, endWidth: 5, startWidth: 1 },
+      { startValue: 55, endValue: 110, style: { fill: '#fbd109', stroke: '#fbd109' }, endWidth: 10, startWidth: 5 },
+      { startValue: 110, endValue: 165, style: { fill: '#ff8000', stroke: '#ff8000' }, endWidth: 13, startWidth: 10 },
+      { startValue: 165, endValue: 220, style: { fill: '#e02629', stroke: '#e02629' }, endWidth: 16, startWidth: 13 }
+  ];
   constructor(public navCtrl: NavController,private mqttService:MqttService) {
 
 	  this.subscription= mqttService.publishUpdated$.subscribe(
@@ -65,18 +74,11 @@ export class GaugePage implements OnDestroy{
   }
   gaugeOnValueChanging(event: any): void
   {
-      let gaugeValueDom = <HTMLElement>document.getElementById('gaugeValue');
-      gaugeValueDom.innerHTML = Math.round(event.args.value) + ' &#8457;';
+      //let gaugeValueDom = <HTMLElement>document.getElementById('gaugeValue');
+      //gaugeValueDom.innerHTML = Math.round(event.args.value) + ' &#8457;';
+      this.inputNumber.nativeElement.innerHTML=Math.round(event.args.value) + ' &#8457;';
   }
-  ticksMinor: any = { interval: 5, size: '5%' };
-  ticksMajor: any = { interval: 10, size: '9%' };
-  ranges: any[] =
-  [
-      { startValue: 0, endValue: 55, style: { fill: '#4bb648', stroke: '#4bb648' }, endWidth: 5, startWidth: 1 },
-      { startValue: 55, endValue: 110, style: { fill: '#fbd109', stroke: '#fbd109' }, endWidth: 10, startWidth: 5 },
-      { startValue: 110, endValue: 165, style: { fill: '#ff8000', stroke: '#ff8000' }, endWidth: 13, startWidth: 10 },
-      { startValue: 165, endValue: 220, style: { fill: '#e02629', stroke: '#e02629' }, endWidth: 16, startWidth: 13 }
-  ];
+  
 
   ngOnDestroy(){
     this.subscription.unsubscribe();

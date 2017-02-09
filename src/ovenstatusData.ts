@@ -11,7 +11,7 @@ export class ovenstatusData implements Serializable<ovenstatusData> {
 
     
     deserialize(input) {
-    	this.channel=input.channel;
+    	//this.channel=input.channel;
     	this.message= input.message;
         return this;
     }
