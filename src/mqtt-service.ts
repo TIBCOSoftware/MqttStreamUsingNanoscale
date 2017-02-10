@@ -34,23 +34,15 @@ export class MqttService{
 	
 	connect(host,port,username,password,onConnect?){
 		var self=this;
-		
-		//this.gateway = new Gateway({url: {protocol:'mqtt:',hostname:host,port:port},username:username,password:password});
 		this.gateway = new Gateway({url: {protocol:'mqtt:',hostname:host,path:"/mqtt"},username:username,password:password});
         // Create an MQTT client instance.  Client connects automatically.
         this.client = this.gateway.mqtt();
-		
-
 		if(onConnect){
 			this.client.on('connect',onConnect);
 		}else{
-			// Interact with the MQTT client as described in the MQTT documentation.
 			this.client.on('connect', function () {
-				debugger;
-				console.log("subscribe to a channel");
 			  self.client.subscribe('/'+self.channel);
 
-			  //self.client.publish('temp_stream', 'Hello mqtt');
 			});	
 		}
         
@@ -91,7 +83,7 @@ export class MqttService{
 
 	onConnect() {
 	  // Once a connection has been made, make a subscription and send a message.
-		console.log("onConnect");
+	  console.log("onConnect");
 	  MqttService.pahoClient.subscribe("/tempstream");
 	  //let message = new Paho.MQTT.Message("Hello");
 	  //message.destinationName = "World";
@@ -100,7 +92,6 @@ export class MqttService{
 
 	// called when the client loses its connection
 	onConnectionLost(responseObject) {
-		debugger;
 	  if (responseObject.errorCode !== 0) {
 	    console.log("onConnectionLost:"+responseObject.errorMessage);
 	  }
@@ -109,44 +100,10 @@ export class MqttService{
 
 	// called when a message arrives
 	onMessageArrived(message) {
-		debugger;
 	  console.log("onMessageArrived:"+message.payloadString);
 	  //let lMessage=JSON.parse(message.payloadString);
 
 	}
-
-	/***************end of Paho javascript SDK Code*************************/
-	/**********************************************************************/
-
-	/*connectAndStream(host:string,username:string,password:string,min:number,max:number,serial:string,model:string,timeInterval:number){
-		var self=this;
-		debugger;
-		//this.gateway = new Gateway({url: {protocol:'mqtt:',hostname:host,port:port},username:username,password:password});
-		this.gateway = new Gateway({url: {protocol:'mqtt:',hostname:host,path:"/mqtt"},username:username,password:password});
-        // Create an MQTT client instance.  Client connects automatically.
-        this.client = this.gateway.mqtt();
-		this.gateway.cache(false);
-        // Interact with the MQTT client as described in the MQTT documentation.
-		this.client.on('connect', function () {
-			debugger;
-			console.log("subscribe to a channel");
-			  self.client.subscribe('temp_stream');
-			  self.interval=setInterval(()=>{
-				debugger;
-				let num= Math.floor(Math.random() * (max - min + 1)) + min;
-				let data = new ovenstatusData().deserialize({"channel": "temp_stream","message":"{\"serial\":\""+serial+"\",\"temp\":\""+num+"\",\"model\":\""+model+"\"}"});
-			
-				self.client.publish('temp_stream', JSON.stringify({"serial":"\""+serial+"\"","temp":"\""+num+"\"","model":"\""+model+"\""}));
-			  },timeInterval);
-			  
-		});
-		this.client.on('message', function (topic, message) {
-		  // message is Buffer
-		  console.log(message.toString());
-		  clearInterval(self.interval);
-		  self.client.end();
-		});
-	}*/
 
 	stopStream(){
 		clearInterval(this.interval);
@@ -181,12 +138,9 @@ export class MqttService{
 
 	streamNumbers(host:URL,min:number,max:number,serial:string,model:string,timeInterval:number,username:string,password:string){
   		let self=this;
-		console.log(timeInterval);
 		self.connectPaho(host.host,1883,username,password,()=>{
-		//self.connect(host.host,1833,username,password,()=>{
 			
 			MqttService.pahoClient.subscribe("/"+self.channel);
-			//self.client.subscribe('/'+self.channel);
 
 			self.interval=setInterval(()=>{
 				if(!self.overrideLocal){//overrideLocal value when red label button is pressed

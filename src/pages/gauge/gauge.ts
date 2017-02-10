@@ -5,8 +5,6 @@ import { MqttService } from '../../mqtt-service';
 import { jqxGaugeComponent } from 'jqwidgets-framework/jqwidgets-ts/angular_jqxgauge';
 
 @Component({
-  //selector: 'page-gauge',
-  //templateUrl: 'gauge.html'
   selector: 'gauge',
     template: `
       <jqxGauge #gaugeReference (onValueChanging)="gaugeOnValueChanging($event)"
@@ -51,6 +49,7 @@ export class GaugePage implements OnDestroy{
       { startValue: 110, endValue: 165, style: { fill: '#ff8000', stroke: '#ff8000' }, endWidth: 13, startWidth: 10 },
       { startValue: 165, endValue: 220, style: { fill: '#e02629', stroke: '#e02629' }, endWidth: 16, startWidth: 13 }
   ];
+
   constructor(public navCtrl: NavController,private mqttService:MqttService) {
 
 	  this.subscription= mqttService.publishUpdated$.subscribe(
@@ -61,7 +60,6 @@ export class GaugePage implements OnDestroy{
   }
 
   ionViewDidLoad() {
-    console.log('Hello GaugePage Page');
     
   }
   ngAfterViewInit(): void
@@ -74,8 +72,6 @@ export class GaugePage implements OnDestroy{
   }
   gaugeOnValueChanging(event: any): void
   {
-      //let gaugeValueDom = <HTMLElement>document.getElementById('gaugeValue');
-      //gaugeValueDom.innerHTML = Math.round(event.args.value) + ' &#8457;';
       this.inputNumber.nativeElement.innerHTML=Math.round(event.args.value) + ' &#8457;';
   }
   

@@ -20,7 +20,7 @@ export class HomePage {
 
   }
   //this will work when web socket support gets enabled
-  connectToMqtt():void{
+  /*connectToMqtt():void{
   	let host:string="perfect-whip-5690.staging.nanoscaleapi.io";
     let port:number =1883;
     let username:string="shassan@anypresence.com,MQTTStreaming,push,MQTT";
@@ -37,7 +37,7 @@ export class HomePage {
     this.mqttService.connectPaho(host,port,username,password);
   }
 
-  /*
+  
 
   subscribeIOS():void{
     var host:String="https://ceaseless-trains-4183.staging.nanoscaleapi.io/push/pushRemoteEndpoint";
@@ -89,7 +89,6 @@ export class HomePage {
   stopStreaming(){
     this.disableStream=false;//enable the button
     this.mqttService.stopPahoStream();
-    //this.mqttService.stopStream();
   }
 
   RedLineCrossed(){
