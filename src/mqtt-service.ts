@@ -27,9 +27,7 @@ export class MqttService{
 	private UpdateSource = new Subject<number>();
 	publishUpdated$ = this.UpdateSource.asObservable();
 	
-	private headers = new Headers({'Content-Type': 'application/json'});
-
-
+	
 	constructor(ajax: Http){
 		this.http=ajax;
 	}
@@ -58,13 +56,8 @@ export class MqttService{
         
 		this.client.on('message', function (topic, message) {
 		  // message is Buffer
-		  console.log(message.toString());
-		  console.log(topic);
-		  /*let lMessage=JSON.parse(topic);
-		   
-		  if(parseInt(topic.temp)){
-		   	self.UpdateSource.next(parseInt(topic.temp));	
-		  }*/
+		  let lMessage=JSON.parse(message.toString());
+		  self.UpdateSource.next(parseInt(lMessage.temp));	
 	  	   
 		});
 	}
@@ -157,6 +150,8 @@ export class MqttService{
 
 	stopStream(){
 		clearInterval(this.interval);
+		
+		this.random_value=0;
 		//send 0 temp to end stream
 		let bodyString= JSON.stringify({"body":{"serial":"","temp":0,"model":""}});
 
@@ -164,29 +159,29 @@ export class MqttService{
 			this.client.publish("/"+this.channel,bodyString);
 			this.client.end();	
 		}
-		this.random_value=0;
 		this.UpdateSource.next(this.random_value);
 		
 	}
 
 	stopPahoStream(){
 		clearInterval(this.interval);
+		this.random_value=0;
 		//send a value of 0 to stop subscribed connections from showing old value
 		if(MqttService.pahoClient){
-			let lPushData=JSON.stringify({"MQTT":{"serial":"","temp":0,"model":""}});
+			let lPushData=JSON.stringify({"params":{"message":{"serial":"","temp":this.random_value,"model":""},"channel":this.channel}});
 			let message = new Paho.MQTT.Message(lPushData);
   			message.destinationName = "/"+this.channel;
 			MqttService.pahoClient.send(message);
 			MqttService.pahoClient.disconnect();
 		}
-		this.random_value=0;
+		
 		this.UpdateSource.next(this.random_value);
 
 	}
 
 	streamNumbers(host:URL,min:number,max:number,serial:string,model:string,timeInterval:number,username:string,password:string){
   		let self=this;
-		
+		console.log(timeInterval);
 		self.connectPaho(host.host,1883,username,password,()=>{
 		//self.connect(host.host,1833,username,password,()=>{
 			
@@ -200,84 +195,19 @@ export class MqttService{
 					self.random_value=220;
 					self.overrideLocal=false;
 				}
-
-				let data = new ovenstatusData().deserialize({"message":"{\"serial\":\""+serial+"\",\"temp\":\""+self.random_value+"\",\"model\":\""+model+"\"}"});
-				let bodyString= JSON.stringify(data);
-	        	let options = new RequestOptions({ headers: self.headers }); // Create a request option
-	        	
-	        	let PostRequest=self.http.post(host.href+"send_push", bodyString, options) // ...using post request
-	                .map((res:Response) => 
-	                 	{
-	                 		
-	                 		//console.log(res.json());
-	                 	}) // ...and calling .json() on the response to return data
-	                .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if a
-	     		//publish to mqtt directly
-	     		
-	     		//self.client.publish("/"+self.channel,JSON.stringify({"MQTT":{"temp":self.random_value}}));
-	     		
-	     		let lPushData=JSON.stringify({"body":{"temp":self.random_value}});
+				let lPushData=JSON.stringify({"params":{"message":{"serial":serial,"temp":self.random_value,"model":model},"channel":self.channel}});
 	     		let message = new Paho.MQTT.Message(lPushData);
   				message.destinationName = "/"+self.channel;
 	     		MqttService.pahoClient.send(message);
 
 
 	     		self.UpdateSource.next(self.random_value);
-	            //send to store
-	            PostRequest.subscribe(
-	                response => {
-	                    // Emit list event
-	                    console.log(response);
-	                }, 
-	                err => {
-	                    // Log errors if any
-	                    console.log(err);
-	                });
+				
   
 			},timeInterval);
 		});
 	}
-	/*streamNumbers(host:URL,min:number,max:number,serial:string,model:string,timeInterval:number){
-  		let self=this;
-		
-		this.interval=setInterval(()=>{
-			if(!self.overrideLocal){//overrideLocal value when red label button is pressed
-				self.random_value= Math.floor(Math.random() * (max - min + 1)) + min;
-			}else{
-				self.random_value=220;
-				self.overrideLocal=false;
-			}
-			this.UpdateSource.next(self.random_value);
-			//let data = new ovenstatusData().deserialize({"channel": self.channel,"message":"{\"serial\":\""+serial+"\",\"temp\":\""+self.random_value+"\",\"model\":\""+model+"\"}"});
-			//this.UpdateSource.next(self.random_value);
-			//let data = new ovenstatusData().deserialize({"MQTT":"{\"serial\":\""+serial+"\",\"temp\":\""+self.random_value+"\",\"model\":\""+model+"\"}"});
-		
-			//let bodyString = JSON.stringify({"channel": "temp_stream","message":"{\"serial\":\""+serial+"\",\"temp\":\""+num+"\",\"model\":\""+model+"\"}"}); // Stringify payload
-			let bodyString= JSON.stringify({"MQTT":{"serial":serial,"temp":self.random_value,"model":model}});
-        	let options = new RequestOptions({ headers: self.headers }); // Create a request option
-
-        	let PostRequest=this.http.post(host.href+"send_push", bodyString, options) // ...using post request
-                 .map((res:Response) => 
-                 	{
-                 		
-                 		//console.log(res.json());
-                 	}) // ...and calling .json() on the response to return data
-                 .catch((error:any) => Observable.throw(error.json().error || 'Server error')); //...errors if a
-     
-            PostRequest.subscribe(
-                response => {
-                    // Emit list event
-                    console.log(response);
-                    self.UpdateSource.next(self.random_value);
-                }, 
-                err => {
-                    // Log errors if any
-                    console.log(err);
-                });
-  
-		},timeInterval);
-
-	}*/
+	
 
 
 

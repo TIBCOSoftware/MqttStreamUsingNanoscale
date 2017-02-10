@@ -9,8 +9,8 @@ import {MqttService} from '../../mqtt-service';
 })
 export class AboutPage {
 	//my default url, dont add https it uses websockets
-  @Input() url:string="perfect-whip-5690.staging.nanoscaleapi.io";
-  @Input() username:string="shassan@anypresence.com,MQTTStreaming,push,MQTT";
+  @Input() url:string="openwisk-mqtt.staging.nanoscaleapi.io";
+  @Input() username:string="qa@nanoscale.io,OpenWisk Temp MQTT Example,push,MQTT";
   @Input() password:string="password";
   constructor(public navCtrl: NavController,private mqttService:MqttService) {
 

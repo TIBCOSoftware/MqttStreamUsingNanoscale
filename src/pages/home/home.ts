@@ -7,12 +7,12 @@ import { MqttService } from '../../mqtt-service';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  @Input() url:string="https://perfect-whip-5690.staging.nanoscaleapi.io";
+  @Input() url:string="https://openwisk-mqtt.staging.nanoscaleapi.io";
   @Input() serial:string="";
   @Input() model:string="";
   @Input() warmth:any={lower:100,upper:160};
   @Input() timeinterval:number=1;
-  @Input() username:string="shassan@anypresence.com,MQTTStreaming,push,MQTT";
+  @Input() username:string="qa@nanoscale.io,OpenWisk Temp MQTT Example,push,MQTT";
   @Input() password:string="password";
   disableStream:boolean=false;
 
